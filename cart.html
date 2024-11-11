@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #111;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: flex-start;
+    }
+
+    header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      justify-content: flex-start;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+    }
+
+    .logo-name {
+      font-size: 36px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    hr {
+      width: 80%;
+      border: 0;
+      border-top: 1px solid #fff;
+      margin: 10px 0;
+    }
+
+    .cart-container {
+      width: 80%;
+      max-width: 600px;
+      background-color: #222;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+      margin-top: 20px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #333;
+      border-radius: 5px;
+      font-size: 18px;
+      color: #FFEB3B;
+    }
+
+    .cart-item span {
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .total {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FFEB3B;
+      margin-top: 20px;
+    }
+
+    .button-container {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .cart-button,
+    .back-button,
+    .checkout-button {
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      width: 48%; /* Make buttons occupy half the width */
+    }
+
+    .cart-button {
+      background-color: #FFEB3B;
+      color: #111;
+    }
+
+    .cart-button:hover {
+      background-color: #f4d03f;
+    }
+
+    .back-button {
+      background-color: #E74C3C;
+      color: white;
+    }
+
+    .back-button:hover {
+      background-color: #C0392B;
+    }
+
+    .checkout-button {
+      background-color: #2ECC71;
+      color: white;
+    }
+
+    .checkout-button:hover {
+      background-color: #27AE60;
+    }
+
+    .message {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FFEB3B;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div>
+      <img src="finallogo.gif" alt="Logo" class="logo">
+      <span class="logo-name">Foody Time</span>
+    </div>
+  </header>
+
+  <hr>
+
+  <div class="cart-container" id="cart-container">
+    <div id="cart-items">
+      <!-- Cart items will be dynamically inserted here -->
+    </div>
+
+    <div class="total" id="total">
+      Total: ₹0
+    </div>
+
+    <div class="button-container">
+      <!-- Back to Menu Button -->
+      <button class="back-button" onclick="window.location.href='index.html'">Back to Menu</button>
+      <!-- Checkout Button -->
+      <button class="checkout-button" onclick="checkout()">Checkout</button>
+    </div>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    // Get cart data from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartItemsDiv = document.getElementById('cart-items');
+    const totalDiv = document.getElementById('total');
+    const messageDiv = document.getElementById('message');
+
+    let totalPrice = 0;
+
+    // Function to render the cart items
+    function renderCart() {
+      cartItemsDiv.innerHTML = '';  // Clear previous cart items
+      totalPrice = 0;
+
+      if (cart.length > 0) {
+        cart.forEach(item => {
+          const cartItemDiv = document.createElement('div');
+          cartItemDiv.classList.add('cart-item');
+          cartItemDiv.innerHTML = `
+            <span>${item.item}</span>
+            <span>₹${item.price}</span>
+          `;
+          cartItemsDiv.appendChild(cartItemDiv);
+          totalPrice += item.price; // Add item price to total
+        });
+        totalDiv.innerHTML = `Total: ₹${totalPrice}`;
+      } else {
+        cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+        totalDiv.innerHTML = 'Total: ₹0';
+      }
+    }
+
+    // Call the render function on page load
+    renderCart();
+
+    // Checkout function
+    function checkout() {
+      // Clear the cart from localStorage after checkout
+      localStorage.removeItem('cart');
+      
+      // Show the message
+      messageDiv.innerHTML = "Happy Food Time!";
+
+      // Wait for 2 seconds before redirecting to main page
+      setTimeout(function() {
+        window.location.href = 'index.html';  // Redirect to the main page after message
+      }, 2000);
+    }
+  </script>
+
+</body>
+
+</html>

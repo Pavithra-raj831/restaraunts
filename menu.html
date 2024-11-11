@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Menu</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #111;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+    }
+
+    .logo-name {
+      font-size: 36px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .food-menu {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .food-item {
+      background-color: #222;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 300px;
+      color: #fff;
+    }
+
+    .food-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .food-item h3 {
+      font-size: 18px;
+      color: #FFEB3B;
+      margin-top: 10px;
+    }
+
+    .food-item p {
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .food-item button {
+      background-color: #FFEB3B;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .food-item button:hover {
+      background-color: #f4d03f;
+    }
+
+    .button-container-top {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .cart-button, .close-button, .dinein-button, .takeaway-button {
+      background-color: #FFEB3B;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .cart-button:hover, .close-button:hover, .dinein-button:hover, .takeaway-button:hover {
+      background-color: #f4d03f;
+    }
+
+    .close-button {
+      background-color: #E74C3C;
+    }
+
+    .close-button:hover {
+      background-color: #C0392B;
+    }
+
+    .dinein-button {
+      background-color: #2ECC71;
+    }
+
+    .dinein-button:hover {
+      background-color: #27AE60;
+    }
+
+    .takeaway-button {
+      background-color: #3498DB;
+    }
+
+    .takeaway-button:hover {
+      background-color: #2980B9;
+    }
+
+    /* Highlight selected button */
+    .selected {
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #222;
+      color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+    }
+
+    .modal select, .modal input {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      background-color: #444;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .modal button {
+      width: 100%;
+      padding: 10px;
+      background-color: #FFEB3B;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background-color: #f4d03f;
+    }
+
+    /* Bottom Right Button Container */
+    .button-container-bottom {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div style="display: flex; align-items: center;">
+      <img src="finallogo.gif" alt="Logo" class="logo">
+      <span class="logo-name">Foody Time</span>
+    </div>
+  </header>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <h2 id="hotel-name">Menu</h2>
+  </div>
+
+  <div id="menu" class="food-menu">
+    <!-- Menu items will be dynamically inserted here -->
+  </div>
+
+  <div class="button-container-top">
+    <button class="dinein-button" onclick="chooseDineIn()">Dine In</button>
+    <button class="takeaway-button" onclick="chooseTakeaway()">Takeaway</button>
+  </div>
+
+  <div class="button-container-bottom">
+    <button class="cart-button" onclick="viewCart()">View Cart</button>
+    <button class="close-button" onclick="closeMenu()">Close Menu</button>
+  </div>
+
+  <!-- Modal Popup Form for Dine In -->
+  <div id="dineinModal" class="modal">
+    <div class="modal-content">
+      <h3>Reserve a Table</h3>
+      <form id="dineinForm">
+        <label for="fromTime">From Time:</label>
+        <div>
+          <select id="fromHour" name="fromHour" required>
+            <option value="" disabled selected>Hour</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+          </select>
+          <select id="fromMinute" name="fromMinute" required>
+            <option value="" disabled selected>Minute</option>
+            <option value="00">00</option>
+            <option value="05">05</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="35">35</option>
+            <option value="40">40</option>
+            <option value="45">45</option>
+            <option value="50">50</option>
+            <option value="55">55</option>
+          </select>
+          <select id="fromAmPm" name="fromAmPm" required>
+            <option value="" disabled selected>AM/PM</option>
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+
+        <label for="toTime">To Time:</label>
+        <div>
+          <select id="toHour" name="toHour" required>
+            <option value="" disabled selected>Hour</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+          </select>
+          <select id="toMinute" name="toMinute" required>
+            <option value="" disabled selected>Minute</option>
+            <option value="00">00</option>
+            <option value="05">05</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="35">35</option>
+            <option value="40">40</option>
+            <option value="45">45</option>
+            <option value="50">50</option>
+            <option value="55">55</option>
+          </select>
+          <select id="toAmPm" name="toAmPm" required>
+            <option value="" disabled selected>AM/PM</option>
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+
+        <label for="numPersons">Number of Persons:</label>
+        <input type="number" id="numPersons" name="numPersons" min="1" required>
+
+        <button type="submit">Submit Reservation</button>
+      </form>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Data for each hotel's menu
+    const menus = {
+      jmg: [
+        { name: 'Chicken Briyani', price: 100, image: 'https://e1.pxfuel.com/desktop-wallpaper/206/969/desktop-wallpaper-edigest-chicken-biryani.jpg ' },
+        { name: 'Veg Briyani', price: 80, image: 'https://img.lovepik.com/photo/48013/0740.jpg_wh860.jpg' },
+        { name: 'Mutton Briyani', price: 200, image: 'https://th.bing.com/th/id/OIP.CK4gQvDxpf3Tl3YzLaAQzAAAAA?w=400&h=400&rs=1&pid=ImgDetMain' },
+        { name: 'Chicken Fried Rice', price: 100, image: 'https://media.30seconds.com/tip/lg/Szechuan-Fried-Rice-Recipe-30702-b83672ceec-1631987740.jpg' },
+        { name: 'Normal Parota', price: 10, image: 'https://images.news18.com/ibnlive/uploads/2022/06/malabar-paratha-16561669553x2.jpg' },
+        { name: 'Fish Fry', price: 150, image: 'https://th.bing.com/th/id/OIP.Ni7-1VGGuxgG4nxQH3NGxQHaHc?w=800&h=805&rs=1&pid=ImgDetMain' }
+      ],
+      hansika: [
+        { name: 'Veg Pulao', price: 70, image: 'https://c1.staticflickr.com/9/8785/28802545472_b1c76c40b2_z.jpg' },
+        { name: 'Paneer Butter Masala', price: 150, image: 'https://myfoodstory.com/wp-content/uploads/2021/07/Paneer-Butter-Masala-3.jpg' },
+        { name: 'Tandoori Roti', price: 25, image: 'https://i.pinimg.com/originals/7e/c8/49/7ec849ddb02f977d0ebc0c1dcdc14581.jpg'},
+        { name: 'Aloo Gobi', price: 90, image: 'https://th.bing.com/th/id/OIP.G817p1O4XLoRCtXXfHqSQgHaHa?rs=1&pid=ImgDetMain' },
+        { name: 'Lassi', price: 50, image: 'https://th.bing.com/th/id/OIP.0Wrci-DL3kbSPCNwruHt8wHaE7?w=626&h=417&rs=1&pid=ImgDetMain' },
+        { name: 'Naan', price: 30, image: 'https://vanakkamindia.in/wp-content/uploads/2023/12/16.png' }
+      ],
+      aiswaryam: [
+        { name: 'Chicken Curry', price: 150, image: 'https://www.ahabazaar.co.uk/wp-content/uploads/2023/09/ABIMP00388_2-1.webp' },
+        { name: 'Fish Curry', price: 180, image: 'https://vaya.in/recipes/wp-content/uploads/2018/04/Kerala-Fish-Curry.jpg' },
+        { name: 'Gobi Manchurian', price: 120, image: 'https://th.bing.com/th/id/R.bd5221a59ae645c51f3be1e60a282339?rik=LyLYc44DZII9Vg&riu=http%3a%2f%2fwww.recipemasters.in%2fwp-content%2fuploads%2f2014%2f04%2fchilli-prawns-Copy.jpg&ehk=06CpWO4u2mN3%2bJvOYTokatYjl03GEzEhQmfoJ5QfBow%3d&risl=&pid=ImgRaw&r=0' },
+        { name: 'Naan', price: 30, image: 'https://vanakkamindia.in/wp-content/uploads/2023/12/16.png' },
+        { name: 'Sambar Rice', price: 80, image: 'https://www.icampinmykitchen.com/wp-content/uploads/2023/02/IMG_1875-scaled.jpg' }
+      ],
+      meatanddrink: [
+        { name: 'Sharwarma', price: 150, image: 'https://img.freepik.com/premium-photo/tasty-chicken-shawarma-wrap-filled-with-veggies-pickles-created-with-generative-ai_124507-155300.jpg' },
+        { name: 'Grilled Chicken', price: 250, image: 'https://img.freepik.com/premium-photo/commercial-photography-roasted-chicken_931559-246.jpg' },
+        { name: 'Fish Fry', price: 200, image: 'https://vaya.in/recipes/wp-content/uploads/2018/04/Kerala-Fish-Curry.jpg' },
+        { name: 'French Fries', price: 80, image: 'https://www.recipetineats.com/wp-content/uploads/2022/09/Fries-with-rosemary-salt_1.jpg' },
+        { name: 'Alhfam', price: 90, image: 'https://i.pinimg.com/736x/2d/9c/dc/2d9cdc445f8a26d6ee5c4b8a2224bd60.jpg' }
+      ]
+    };
+
+    // Get the hotel parameter from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotel = urlParams.get('hotel');
+
+    // Check if the hotel exists in our menu data
+    if (menus[hotel]) {
+      const menu = menus[hotel];
+      const menuDiv = document.getElementById('menu');
+      const hotelNameElement = document.getElementById('hotel-name');
+      hotelNameElement.innerText = `${hotel.charAt(0).toUpperCase() + hotel.slice(1)} Menu`; // Set hotel name dynamically
+
+      // Populate the menu
+      menu.forEach(item => {
+        const foodItemDiv = document.createElement('div');
+        foodItemDiv.classList.add('food-item');
+        foodItemDiv.innerHTML =   
+          `<img src="${item.image}" alt="${item.name}">
+           <h3>${item.name}</h3>
+           <p>₹${item.price}</p>
+           <button onclick="addToCart('${item.name}', ${item.price})">Add to Cart</button>`; 
+        menuDiv.appendChild(foodItemDiv);
+      });
+    } else {
+      document.getElementById('menu').innerHTML = '<p>Menu not available for this hotel.</p>';
+    }
+
+    // Cart functionality
+    function addToCart(item, price) {
+      alert(`${item} added to cart`);
+    }
+
+    function viewCart() {
+      window.location.href = "cart.html";
+    }
+
+    function closeMenu() {
+      window.location.href = "index.html";
+    }
+
+    // Dine In Button Functionality
+    function chooseDineIn() {
+      document.getElementById('dineinModal').style.display = 'block';
+      document.querySelector('.dinein-button').classList.add('selected');
+      document.querySelector('.takeaway-button').classList.remove('selected');
+    }
+
+    // Takeaway Button Functionality
+    function chooseTakeaway() {
+      alert('Takeaway selected');
+      document.querySelector('.takeaway-button').classList.add('selected');
+      document.querySelector('.dinein-button').classList.remove('selected');
+    }
+
+    // Close Modal
+    function closeModal() {
+      document.getElementById('dineinModal').style.display = 'none';
+    }
+
+    // Handle Dine In Form submission
+    document.getElementById('dineinForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const fromHour = document.getElementById('fromHour').value;
+      const fromMinute = document.getElementById('fromMinute').value;
+      const fromAmPm = document.getElementById('fromAmPm').value;
+      const toHour = document.getElementById('toHour').value;
+      const toMinute = document.getElementById('toMinute').value;
+      const toAmPm = document.getElementById('toAmPm').value;
+      const numPersons = document.getElementById('numPersons').value;
+
+      alert(`Reservation Confirmed! From: ${fromHour}:${fromMinute} ${fromAmPm} To: ${toHour}:${toMinute} ${toAmPm} for ${numPersons} persons.`);
+      closeModal();
+    });
+  </script>
+
+</body>
+
+</html>
