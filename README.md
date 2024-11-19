@@ -1,2 +1,2 @@
 # restaraunts
-Restaraunts dine in and 
+Restaraunts dine in and Takeaway
